@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes cartPlus {
+  0% { opacity: 0; transform: scale(0.5) translateY(10px); }
+  30% { opacity: 1; transform: scale(1.2) translateY(0); }
+  70% { opacity: 1; transform: scale(1) translateY(-10px); }
+  100% { opacity: 0; transform: scale(0.8) translateY(-30px); }
+}
+.animate-cart-plus {
+  animation: cartPlus 0.8s ease-out forwards;
+}
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { scrollbar-width: none; }
