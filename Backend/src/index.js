@@ -25,7 +25,7 @@ const aiRoutes = require("./route/ai.routes");
   const cors = require("cors");
   app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: ["https://mozowhere.vercel.app"],
     credentials: true,
   })
 );
