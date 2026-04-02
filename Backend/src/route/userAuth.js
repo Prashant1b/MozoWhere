@@ -1,5 +1,5 @@
 const express=require('express');
-const { register,adminRegister, login, logout, getprofile,DeleteUserData, updatepassword } = require("../Controller/userAuthent");
+const { register,adminRegister, login, logout, getprofile,DeleteUserData, updatepassword, updateProfile, getProfileStats } = require("../Controller/userAuthent");
 const adminmiddleware = require('../middleware/adminmiddleware');
 const router=express.Router();
 const usermiddleware=require("../middleware/usermiddleware");
@@ -12,6 +12,8 @@ router.post("/login",login);
 // logout
 router.post("/logout",usermiddleware,logout);
 router.get("/profile", usermiddleware, getprofile);
+router.get("/profile/stats", usermiddleware, getProfileStats);
+router.put("/profile", usermiddleware, updateProfile);
 router.delete("/profile/delete",usermiddleware,DeleteUserData);
 router.post("/updatepassword",usermiddleware,updatepassword);
 module.exports=router;

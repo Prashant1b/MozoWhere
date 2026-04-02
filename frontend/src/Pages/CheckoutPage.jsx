@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { cartApi } from "../api/cart.api";
 import { ordersApi } from "../api/orders.api";
 import { paymentApi } from "../api/payment.api";
+import { deliveryApi } from "../api/delivery.api";
 
 function loadRazorpayScript() {
   return new Promise((resolve) => {
@@ -25,6 +26,9 @@ export default function CheckoutPage() {
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState("");
   const [paymentMode, setPaymentMode] = useState("cod"); // cod | upi | card | netbanking
+  const [deliveryInfo, setDeliveryInfo] = useState(null);
+  const [deliveryLoading, setDeliveryLoading] = useState(false);
+  const [shippingCharge, setShippingCharge] = useState(0);
 
   const [address, setAddress] = useState({
     name: "",
@@ -49,6 +53,46 @@ export default function CheckoutPage() {
   }, [address]);
 
   const setField = (k, v) => setAddress((prev) => ({ ...prev, [k]: v }));
+
+  // Check delivery charge when pincode is 6 digits
+  useEffect(() => {
+    const pin = String(address.pincode || "").trim();
+    if (!/^\d{6}$/.test(pin)) {
+      setDeliveryInfo(null);
+      setShippingCharge(0);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      setDeliveryLoading(true);
+      try {
+        const res = await deliveryApi.check(pin);
+        if (cancelled) return;
+        const data = res.data;
+        setDeliveryInfo(data);
+        if (!data.available) {
+          setShippingCharge(0);
+        } else if (data.freeAbove > 0 && payable >= data.freeAbove) {
+          setShippingCharge(0);
+        } else {
+          setShippingCharge(data.charge || 0);
+        }
+        // Auto-fill city and state if available
+        if (data.city && !address.city) setField("city", data.city);
+        if (data.state && !address.state) setField("state", data.state);
+      } catch {
+        if (!cancelled) {
+          setDeliveryInfo(null);
+          setShippingCharge(0);
+        }
+      } finally {
+        if (!cancelled) setDeliveryLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [address.pincode, payable]);
+
+  const finalPayable = payable + shippingCharge;
 
   useEffect(() => {
     if (subtotal > 0 || payable > 0) return;
@@ -207,7 +251,41 @@ export default function CheckoutPage() {
           <h2 className="text-lg font-bold text-gray-900">Order Summary</h2>
           <div className="mt-4 space-y-2 text-sm">
             <div className="flex justify-between"><span>Subtotal</span><span>Rs {subtotal}</span></div>
-            <div className="flex justify-between border-t pt-2 text-base font-bold"><span>Payable</span><span>Rs {payable}</span></div>
+            {couponCode && payable < subtotal && (
+              <div className="flex justify-between text-emerald-700"><span>Discount</span><span>- Rs {subtotal - payable}</span></div>
+            )}
+            <div className="flex justify-between">
+              <span>Delivery</span>
+              <span>
+                {deliveryLoading ? (
+                  <span className="text-slate-400">Checking...</span>
+                ) : shippingCharge > 0 ? (
+                  `Rs ${shippingCharge}`
+                ) : deliveryInfo?.available ? (
+                  <span className="text-emerald-600 font-semibold">FREE</span>
+                ) : address.pincode.length === 6 ? (
+                  <span className="text-slate-400">N/A</span>
+                ) : (
+                  <span className="text-slate-400">Enter pincode</span>
+                )}
+              </span>
+            </div>
+            {deliveryInfo && !deliveryInfo.available && address.pincode.length === 6 && (
+              <div className="rounded-lg bg-amber-50 border border-amber-200 p-2 text-xs text-amber-700">
+                Delivery not configured for this pincode. No delivery charge will be applied.
+              </div>
+            )}
+            {deliveryInfo?.available && deliveryInfo.freeAbove > 0 && shippingCharge > 0 && (
+              <div className="rounded-lg bg-blue-50 border border-blue-200 p-2 text-xs text-blue-700">
+                Free delivery on orders above Rs {deliveryInfo.freeAbove}
+              </div>
+            )}
+            {deliveryInfo?.available && deliveryInfo.freeAbove > 0 && shippingCharge === 0 && (
+              <div className="rounded-lg bg-emerald-50 border border-emerald-200 p-2 text-xs text-emerald-700">
+                You got free delivery!
+              </div>
+            )}
+            <div className="flex justify-between border-t pt-2 text-base font-bold"><span>Total</span><span>Rs {finalPayable}</span></div>
           </div>
           <button
             onClick={onPlaceOrder}

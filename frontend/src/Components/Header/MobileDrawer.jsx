@@ -71,7 +71,7 @@ export default function MobileDrawer({ open, onClose, user, booting, onLogout })
           <div className="mt-3 grid grid-cols-3 gap-3">
             <ProfileCard icon={<User className="h-6 w-6" />} label="My Account" onClick={() => go("/profile")} />
             <ProfileCard icon={<Truck className="h-6 w-6" />} label="My Orders" onClick={() => go("/orders")} />
-            <ProfileCard icon={<Wallet className="h-6 w-6" />} label="Wallet" onClick={() => go("/wallet")} />
+            <ProfileCard icon={<Wallet className="h-6 w-6" />} label="Offers" onClick={() => go("/offers")} />
           </div>
 
           <div className="mt-3">
@@ -102,11 +102,11 @@ export default function MobileDrawer({ open, onClose, user, booting, onLogout })
 
           <div className="text-[12px] tracking-wide text-gray-500 font-semibold">CONTACT US</div>
           <div className="mt-2 space-y-1">
-            <Link to="/support" onClick={onClose} className="block rounded-xl px-3 py-3 text-[15px] text-gray-900 hover:bg-gray-50">
+            <Link to="/contact" onClick={onClose} className="block rounded-xl px-3 py-3 text-[15px] text-gray-900 hover:bg-gray-50">
               Help & Support
             </Link>
-            <Link to="/feedback" onClick={onClose} className="block rounded-xl px-3 py-3 text-[15px] text-gray-900 hover:bg-gray-50">
-              Feedback & Suggestions
+            <Link to="/stores" onClick={onClose} className="block rounded-xl px-3 py-3 text-[15px] text-gray-900 hover:bg-gray-50">
+              Find a Store
             </Link>
           </div>
         </div>

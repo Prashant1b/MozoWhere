@@ -100,7 +100,7 @@ export async function buildPreviewForSide({
 
   drawTint(ctx, tintHex, canvasW, canvasH);
 
-  const areaW = canvasW * 0.78;
+  const areaW = canvasW * 0.42;
   const areaH = areaW * (printH / printW);
   const areaX = (canvasW - areaW) / 2;
   const areaY = canvasH * 0.22;

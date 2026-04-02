@@ -63,7 +63,7 @@ export default function PreviewStep({
               <div
                 ref={areaRef}
                 className="absolute left-1/2 top-[22%] z-20 -translate-x-1/2 overflow-hidden"
-                style={{ width: "78%", aspectRatio: "280 / 330" }}
+                style={{ width: "42%", aspectRatio: "280 / 330" }}
               >
                 <div
                   ref={boxRef}

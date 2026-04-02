@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import {
   LayoutDashboard, Package, ShoppingBag, Folder, Shirt,
-  Layers, BadgePercent, ClipboardList, Sparkles, X, Users,
+  Layers, BadgePercent, ClipboardList, Sparkles, X, Users, Truck,
 } from "lucide-react";
 
 const links = [
@@ -14,6 +14,7 @@ const links = [
   { to: "/admin/variants", icon: Layers, label: "Variants" },
   { to: "/admin/coupons", icon: BadgePercent, label: "Coupons" },
   { to: "/admin/bulk-orders", icon: ClipboardList, label: "Bulk Orders" },
+  { to: "/admin/delivery-charges", icon: Truck, label: "Delivery Charges" },
   { to: "/admin/services", icon: Sparkles, label: "Services" },
   { to: "/admin/users", icon: Users, label: "Users" },
 ];

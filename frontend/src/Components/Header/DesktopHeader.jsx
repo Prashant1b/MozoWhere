@@ -56,7 +56,7 @@ export default function DesktopHeader({
             </div>
 
             <div className="flex items-center gap-5 whitespace-nowrap">
-              <Link to="/support" className="hover:text-black">
+              <Link to="/contact" className="hover:text-black">
                 Contact Us
               </Link>
               <Link to="/orders/track" className="hover:text-black">

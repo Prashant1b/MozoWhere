@@ -94,10 +94,11 @@ export default function AdminOrderDetailModal({ order, onClose }) {
         {/* Body */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {/* Order Info */}
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
             <InfoCard label="Customer" value={userEmail} />
             <InfoCard label="Status" value={order.orderStatus || "pending"} />
             <InfoCard label="Payment" value={`${order.paymentMethod || "-"} / ${order.paymentStatus || "-"}`} />
+            <InfoCard label="Shipping" value={order.shippingCharge > 0 ? `Rs ${order.shippingCharge}` : "Free"} />
             <InfoCard label="Total" value={`Rs ${Number(order.totalAmount || 0)}`} />
           </div>
 

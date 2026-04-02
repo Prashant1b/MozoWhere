@@ -27,6 +27,9 @@ const FAQPage = lazy(() => import("./Pages/FAQPage"));
 const ReturnsPage = lazy(() => import("./Pages/ReturnsPage"));
 const PrivacyPage = lazy(() => import("./Pages/PrivacyPage"));
 const TermsPage = lazy(() => import("./Pages/TermsPage"));
+const OffersPage = lazy(() => import("./Pages/OffersPage"));
+const FanbookPage = lazy(() => import("./Pages/FanbookPage"));
+const StoresPage = lazy(() => import("./Pages/StoresPage"));
 
 // Admin pages (lazy - only admins need these)
 const AdminRoute = lazy(() => import("./routes/AdminRoute"));
@@ -42,6 +45,7 @@ const AdminCouponsPage = lazy(() => import("./Pages/admin/AdminCouponsPage"));
 const AdminBulkOrdersPage = lazy(() => import("./Pages/admin/AdminBulkOrdersPage"));
 const AdminServicesPage = lazy(() => import("./Pages/admin/AdminServicesPage"));
 const AdminUsersPage = lazy(() => import("./Pages/admin/AdminUsersPage"));
+const AdminDeliveryChargesPage = lazy(() => import("./Pages/admin/AdminDeliveryChargesPage"));
 
 function PageLoader() {
   return (
@@ -94,6 +98,9 @@ export default function App() {
           <Route path="/returns" element={<ReturnsPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/terms" element={<TermsPage />} />
+          <Route path="/offers" element={<OffersPage />} />
+          <Route path="/fanbook" element={<FanbookPage />} />
+          <Route path="/stores" element={<StoresPage />} />
 
           <Route element={<AdminRoute />}>
             <Route path="/admin" element={<AdminLayout />}>
@@ -106,6 +113,7 @@ export default function App() {
               <Route path="variants" element={<AdminVariantsPage />} />
               <Route path="coupons" element={<AdminCouponsPage />} />
               <Route path="bulk-orders" element={<AdminBulkOrdersPage />} />
+              <Route path="delivery-charges" element={<AdminDeliveryChargesPage />} />
               <Route path="services" element={<AdminServicesPage />} />
               <Route path="users" element={<AdminUsersPage />} />
             </Route>

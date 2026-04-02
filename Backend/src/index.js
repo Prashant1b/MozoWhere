@@ -21,11 +21,12 @@ const customizeDesignRoutes = require("./route/customize.design.routes");
 const bulkOrderRoutes = require("./route/bulkOrder.routes");
 const serviceRoutes = require("./route/service.routes");
 const aiRoutes = require("./route/ai.routes");
+const deliveryRoutes = require("./route/delivery.routes");
 
   const cors = require("cors");
   app.use(
   cors({
-    origin: ["https://mozowhere.vercel.app"],
+    origin: ["http://mozowhere.vercel.app"],
     credentials: true,
   })
 );
@@ -50,6 +51,7 @@ app.use("/customize/designs", customizeDesignRoutes);
 app.use("/bulk-orders", bulkOrderRoutes);
 app.use("/services", serviceRoutes);
 app.use("/ai", aiRoutes);
+app.use("/delivery", deliveryRoutes);
 
   const Initaliseconnection=async()=>{
       try{

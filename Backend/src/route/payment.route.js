@@ -85,24 +85,23 @@ router.post("/verify", usermiddleware, async (req, res) => {
     const order = await Order.findOne({ _id: orderId, user: userId });
     if (!order) return res.status(404).json({ success: false, message: "Order not found" });
 
-    // const sign = `${razorpay_order_id}|${razorpay_payment_id}`;
-    // const expected = crypto
-    //   .createHmac("sha256", RAZORPAY_KEY_SECRET)
-    //   .update(sign)
-    //   .digest("hex");
+    const sign = `${razorpay_order_id}|${razorpay_payment_id}`;
+    const expected = crypto
+      .createHmac("sha256", RAZORPAY_KEY_SECRET)
+      .update(sign)
+      .digest("hex");
 
-    // if (expected !== razorpay_signature) {
-    //   // mark failed
-    //   order.paymentStatus = "failed";
-    //   await order.save();
+    if (expected !== razorpay_signature) {
+      order.paymentStatus = "failed";
+      await order.save();
 
-    //   await Payment.findOneAndUpdate(
-    //     { order: order._id, razorpayOrderId: razorpay_order_id },
-    //     { status: "failed", razorpayPaymentId: razorpay_payment_id, razorpaySignature: razorpay_signature }
-    //   );
+      await Payment.findOneAndUpdate(
+        { order: order._id, razorpayOrderId: razorpay_order_id },
+        { status: "failed", razorpayPaymentId: razorpay_payment_id, razorpaySignature: razorpay_signature }
+      );
 
-    //   return res.status(400).json({ success: false, message: "Invalid payment signature" });
-    // }
+      return res.status(400).json({ success: false, message: "Invalid payment signature" });
+    }
 
     // mark paid
     order.paymentStatus = "paid";

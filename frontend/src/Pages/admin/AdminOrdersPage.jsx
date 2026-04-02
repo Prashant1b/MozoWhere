@@ -204,6 +204,9 @@ function OrderRow({ order, saving, onChangeStatus, onViewDetail }) {
     <tr className="text-sm hover:bg-slate-50/50">
       <td className="px-4 py-3">
         <div className="font-semibold text-slate-900 font-mono text-xs">#{order?._id?.slice(-8)}</div>
+        {order?.shippingCharge > 0 && (
+          <div className="text-[10px] text-slate-400">Shipping: Rs {order.shippingCharge}</div>
+        )}
         <div className="text-xs text-slate-500">Rs {Number(order?.totalAmount || 0)}</div>
         <button
           onClick={onViewDetail}

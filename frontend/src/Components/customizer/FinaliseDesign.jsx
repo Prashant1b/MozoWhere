@@ -334,7 +334,7 @@ export default function FinaliseDesign({
             <div
               ref={areaRef}
               className="absolute left-1/2 top-[22%] -translate-x-1/2 overflow-hidden touch-none z-20"
-              style={{ width: "78%", aspectRatio: "280 / 330" }}
+              style={{ width: "42%", aspectRatio: "280 / 330" }}
               onPointerDown={() => setActiveId(null)}
             >
               <div

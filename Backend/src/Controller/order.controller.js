@@ -5,6 +5,7 @@ const ProductVariant = require("../models/ProductVariant");
 const CustomDesign = require("../models/CustomDesignModel");
 const Coupon = require("../models/CouponModel");
 const User = require("../models/user");
+const DeliveryCharge = require("../models/DeliveryChargeModel");
 
 const createOrderFromCart = async (req, res) => {
   const session = await mongoose.startSession();
@@ -205,7 +206,23 @@ const createOrderFromCart = async (req, res) => {
       await coupon.save({ session });
     }
 
-    const totalAmount = Math.max(0, subtotalAmount - discountAmount);
+    // Calculate shipping charge based on pincode
+    let shippingCharge = 0;
+    const deliveryDoc = await DeliveryCharge.findOne({
+      pincode: pincode,
+      isActive: true,
+    }).session(session);
+
+    if (deliveryDoc) {
+      const afterDiscount = Math.max(0, subtotalAmount - discountAmount);
+      if (deliveryDoc.freeAbove > 0 && afterDiscount >= deliveryDoc.freeAbove) {
+        shippingCharge = 0;
+      } else {
+        shippingCharge = deliveryDoc.charge;
+      }
+    }
+
+    const totalAmount = Math.max(0, subtotalAmount - discountAmount + shippingCharge);
 
     const order = await Order.create(
       [
@@ -215,6 +232,7 @@ const createOrderFromCart = async (req, res) => {
           subtotalAmount,
           discountAmount,
           couponCode: appliedCouponCode,
+          shippingCharge,
           totalAmount,
           shippingAddress: shippingAddress || {},
           orderStatus: normalizedPaymentMethod === "cod" ? "confirmed" : "pending",

@@ -6,10 +6,12 @@ const {
   listCoupons,
   createCoupon,
   deleteCoupon,
+  listActiveOffers,
 } = require("../Controller/coupon.controller");
 
 const router = express.Router();
 router.get("/", adminmiddleware, listCoupons);
+router.get("/offers", listActiveOffers);
 router.post("/", adminmiddleware, createCoupon);
 router.delete("/:id", adminmiddleware, deleteCoupon);
 router.post("/apply", usermiddleware, applyCoupon);

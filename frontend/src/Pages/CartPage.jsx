@@ -82,7 +82,7 @@ function CustomCartPreview({ design }) {
 
       <div
         className="pointer-events-none absolute left-1/2 top-[22%] -translate-x-1/2 overflow-hidden"
-        style={{ width: "78%", aspectRatio: "280 / 330" }}
+        style={{ width: "42%", aspectRatio: "280 / 330" }}
       >
         <div className="relative h-full w-full">
           {layers.map((it, idx) => {

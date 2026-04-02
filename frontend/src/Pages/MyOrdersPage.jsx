@@ -86,7 +86,7 @@ function CustomOrderPreview({ item }) {
 
       <div
         className="absolute left-1/2 top-[18%] -translate-x-1/2 overflow-hidden rounded-[2px]"
-        style={{ width: "84%", maxWidth: printW, aspectRatio: "280 / 330" }}
+        style={{ width: "42%", maxWidth: printW, aspectRatio: "280 / 330" }}
       >
         <div className="relative h-full w-full border border-dashed border-black/20">
           {layers.map((it, idx) => {
@@ -220,6 +220,9 @@ export default function MyOrdersPage() {
                     <div>
                       <div className="text-sm font-bold text-gray-900">Order #{o._id}</div>
                       <div className="mt-1 text-xs text-gray-500">Placed: {created}</div>
+                      {o?.shippingCharge > 0 && (
+                        <div className="mt-1 text-xs text-gray-500">Shipping: Rs {o.shippingCharge}</div>
+                      )}
                       <div className="mt-1 text-sm font-semibold text-gray-900">Total: Rs {Number(o?.totalAmount || 0)}</div>
                     </div>
 

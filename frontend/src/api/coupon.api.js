@@ -5,4 +5,5 @@ export const couponApi = {
   create: (payload) => api.post("/coupons", payload),
   remove: (id) => api.delete(`/coupons/${id}`),
   apply: (code) => api.post("/coupons/apply", { code }),
+  activeOffers: () => api.get("/coupons/offers"),
 };

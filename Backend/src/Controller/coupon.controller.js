@@ -137,4 +137,19 @@ const applyCoupon = async (req, res) => {
   }
 };
 
-module.exports = { applyCoupon, listCoupons, createCoupon, deleteCoupon };
+const listActiveOffers = async (req, res) => {
+  try {
+    const coupons = await Coupon.find({
+      isActive: true,
+      expiryDate: { $gt: new Date() },
+    })
+      .select("code discountType value minCartAmount maxDiscount expiryDate")
+      .sort({ createdAt: -1 })
+      .lean();
+    return res.json({ offers: coupons });
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+module.exports = { applyCoupon, listCoupons, createCoupon, deleteCoupon, listActiveOffers };

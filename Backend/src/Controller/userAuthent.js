@@ -210,6 +210,90 @@ const updatepassword = async (req, res) => {
 
 
 
+const updateProfile = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const { firstname, lastname, age } = req.body;
+        const updates = {};
+
+        if (firstname !== undefined) {
+            const name = String(firstname).trim();
+            if (name.length < 3 || name.length > 20) {
+                return res.status(400).json({ message: "First name must be 3-20 characters" });
+            }
+            updates.firstname = name;
+        }
+        if (lastname !== undefined) {
+            const lname = String(lastname).trim();
+            if (lname && (lname.length < 3 || lname.length > 20)) {
+                return res.status(400).json({ message: "Last name must be 3-20 characters" });
+            }
+            updates.lastname = lname;
+        }
+        if (age !== undefined) {
+            const a = Number(age);
+            if (a && (a < 6 || a > 60)) {
+                return res.status(400).json({ message: "Age must be between 6 and 60" });
+            }
+            updates.age = a || undefined;
+        }
+
+        if (Object.keys(updates).length === 0) {
+            return res.status(400).json({ message: "Nothing to update" });
+        }
+
+        const user = await User.findByIdAndUpdate(userId, updates, { new: true, runValidators: true }).select("-password -__v");
+        return res.status(200).json({ message: "Profile updated", user });
+    } catch (error) {
+        return res.status(500).json({ message: error.message || "Failed to update profile" });
+    }
+};
+
+const Order = require("../models/OrderModel");
+
+const getProfileStats = async (req, res) => {
+    try {
+        const userId = req.user._id;
+
+        const [user, orders, recentOrders] = await Promise.all([
+            User.findById(userId).select("-password -__v").lean(),
+            Order.find({ user: userId }).select("totalAmount orderStatus paymentStatus shippingCharge createdAt").lean(),
+            Order.find({ user: userId })
+                .sort({ createdAt: -1 })
+                .limit(5)
+                .select("totalAmount orderStatus paymentStatus shippingCharge items createdAt")
+                .lean(),
+        ]);
+
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        const totalOrders = orders.length;
+        const totalSpent = orders
+            .filter((o) => o.paymentStatus === "paid" || o.orderStatus !== "cancelled")
+            .reduce((sum, o) => sum + (o.totalAmount || 0), 0);
+        const delivered = orders.filter((o) => o.orderStatus === "delivered").length;
+        const pending = orders.filter((o) => ["pending", "confirmed", "processing"].includes(o.orderStatus)).length;
+        const shipped = orders.filter((o) => o.orderStatus === "shipped").length;
+        const cancelled = orders.filter((o) => o.orderStatus === "cancelled").length;
+
+        return res.json({
+            user,
+            stats: { totalOrders, totalSpent, delivered, pending, shipped, cancelled },
+            recentOrders: recentOrders.map((o) => ({
+                _id: o._id,
+                totalAmount: o.totalAmount,
+                shippingCharge: o.shippingCharge,
+                orderStatus: o.orderStatus,
+                paymentStatus: o.paymentStatus,
+                itemCount: o.items?.length || 0,
+                createdAt: o.createdAt,
+            })),
+        });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+};
+
 module.exports = {
     register,
     adminRegister,
@@ -217,7 +301,9 @@ module.exports = {
     logout,
     getprofile,
     DeleteUserData,
-    updatepassword
+    updatepassword,
+    updateProfile,
+    getProfileStats,
 };
 
 
