@@ -26,7 +26,7 @@ const deliveryRoutes = require("./route/delivery.routes");
   const cors = require("cors");
   app.use(
   cors({
-    origin: ["http://mozowhere.vercel.app"],
+    origin: ["https://mozowhere.vercel.app"],
     credentials: true,
   })
 );
